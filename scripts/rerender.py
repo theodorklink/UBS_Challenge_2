@@ -49,7 +49,14 @@ def main() -> int:
     timestamp = china_path.stem.split("_")[-2] + "_" + china_path.stem.split("_")[-1]
     out_html = out / "views" / f"sieyuan_vs_siemens_{timestamp}.html"
     render_pair_view(china_table, global_table, spread, commentary, out_html)
+
+    # Mirror to public/index.html for Vercel.
+    public_html = ROOT / "public" / "index.html"
+    public_html.parent.mkdir(parents=True, exist_ok=True)
+    public_html.write_bytes(out_html.read_bytes())
+
     print(f"\nRe-rendered: {out_html}")
+    print(f"Public copy: {public_html}")
     return 0
 
 

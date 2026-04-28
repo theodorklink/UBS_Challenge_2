@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UBS Pair Trade — Sieyuan vs Siemens Energy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000000;
+  --bg-alt: #0a0a0a;
+  --bg-card: #0f0f0f;
+  --gold: #FA8C00;
+  --gold-soft: rgba(250, 140, 0, 0.25);
+  --target: #1a3a5c;
+  --target-soft: rgba(26, 58, 92, 0.4);
+  --text: #e8e6e0;
+  --text-muted: #6e6e6e;
+  --pos: #00C853;
+  --neg: #FF1744;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.4;
+}
+header.bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--gold-soft);
+  gap: 24px;
+}
+header .title { color: var(--gold); font-weight: 600; letter-spacing: 0.06em; font-size: 13px; }
+header .meta { font-size: 10px; color: var(--text-muted); text-align: right; }
+header .draft {
+  background: var(--gold); color: #1a1409;
+  padding: 4px 10px; border-radius: 2px;
+  font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; font-weight: 600;
+}
+
+.three-panel {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr 0.95fr;
+  gap: 1px;
+  background: var(--gold-soft);
+  min-height: calc(100vh - 50px);
+}
+.panel {
+  background: var(--bg);
+  padding: 16px 18px;
+  overflow-x: auto;
+}
+.panel h2 {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 6px;
+  border-bottom: 1px solid var(--gold-soft);
+  padding-bottom: 6px;
+}
+.panel .sub {
+  font-size: 10px; color: var(--text-muted); margin-bottom: 14px;
+}
+
+table.comp {
+  width: 100%; border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+table.comp th, table.comp td {
+  padding: 4px 8px; vertical-align: top;
+  border-bottom: 1px solid #1a1a1a;
+}
+table.comp th {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 500; text-align: right;
+}
+table.comp th:first-child, table.comp td:first-child {
+  text-align: left; min-width: 130px;
+}
+table.comp td { text-align: right; font-size: 12px; }
+table.comp tr.target { background: var(--target-soft); }
+table.comp tr.target td { color: var(--text); font-weight: 500; }
+table.comp tr.target_segment td {
+  background: rgba(250, 140, 0, 0.04);
+  font-style: italic;
+  color: #c9c5b8;
+}
+table.comp tr.target_segment td:first-child::before {
+  content: '↳ '; color: var(--gold-soft); font-style: normal;
+}
+.muted { color: var(--text-muted); }
+.pos { color: var(--pos); }
+.neg { color: var(--neg); }
+.flag-data-pending { color: var(--gold); font-style: italic; }
+
+.section { margin-top: 18px; }
+.section h3 {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 6px;
+  font-weight: 500;
+}
+
+.cm-warning {
+  border: 1px solid var(--gold-soft);
+  background: rgba(250, 140, 0, 0.06);
+  padding: 8px 10px; margin-bottom: 14px;
+  font-size: 10px;
+}
+.cm-warning .lbl { color: var(--gold); text-transform: uppercase; letter-spacing: 0.18em; font-size: 9px; margin-bottom: 4px; }
+.cm-warning ul { margin: 4px 0 0; padding-left: 16px; color: var(--text); }
+.cm-warning li { margin-bottom: 2px; }
+
+table.spread { width: 100%; border-collapse: collapse; font-size: 11px; }
+table.spread th, table.spread td { padding: 5px 8px; border-bottom: 1px solid #1a1a1a; vertical-align: top; }
+table.spread th { color: var(--text-muted); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; text-align: right; font-weight: 500; }
+table.spread th:first-child, table.spread td:first-child { text-align: left; }
+table.spread td { text-align: right; font-variant-numeric: tabular-nums; }
+
+.position-rich { color: var(--gold); font-weight: 500; }
+.position-cheap { color: var(--pos); font-weight: 500; }
+.position-neutral { color: var(--text-muted); }
+.position-na { color: var(--text-muted); font-style: italic; }
+
+.reset-bar { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+.reset-bar .label { font-size: 10px; color: var(--text); }
+.reset-bar .value { font-size: 12px; font-weight: 500; }
+.reset-bar .value.neg { color: var(--neg); }
+.reset-bar .value.pos { color: var(--pos); }
+
+.policy-table { font-size: 10px; }
+.policy-table .score-pos { color: var(--pos); }
+.policy-table .score-neg { color: var(--neg); }
+.policy-table .score-neutral { color: var(--text-muted); }
+
+details.commentary {
+  border: 1px solid var(--gold-soft);
+  padding: 10px 12px;
+  margin-top: 8px;
+  background: var(--bg-card);
+  border-radius: 2px;
+}
+details.commentary summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+}
+details.commentary summary::-webkit-details-marker { display: none; }
+details.commentary summary::before { content: '▸ '; }
+details.commentary[open] summary::before { content: '▾ '; }
+details.commentary .body { margin-top: 8px; font-size: 11px; line-height: 1.6; color: var(--text); }
+.commentary-banner {
+  background: var(--gold); color: #1a1409;
+  padding: 6px 10px; font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; font-weight: 600; margin-bottom: 10px;
+}
+
+footer.bar {
+  padding: 14px 20px;
+  border-top: 1px solid var(--gold-soft);
+  font-size: 10px;
+  color: var(--text-muted);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+  .three-panel { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="title">SIEYUAN ELECTRIC (002028.SZ) | SIEMENS ENERGY (ENR.DE) — Pair-Trade Analysis</div>
+  <div></div>
+  <div class="meta">
+    Generated 2026-04-28 22:19 UTC<br>
+    <span class="draft">DRAFT</span>
+  </div>
+</header>
+
+<div class="three-panel">
+  <section class="panel" id="panel-china">
+    <h2>002028.SZ | Sieyuan Electric — China T&amp;D Basket</h2>
+    <div class="sub">A-share basket · CAS reporting · 6 members</div>
+    <table class="comp"><thead><tr><th></th><th>Price</th><th>Mcap (USD bn)</th><th>1M %</th><th>YTD %</th><th>P/E (Fwd)</th><th>vs peer med</th><th>EV/EBITDA</th><th>vs peer med</th><th>EBIT margin</th><th>Margin slope</th><th>Rev YoY</th><th>3Y CAGR</th><th>ROE</th></tr></thead><tbody><tr class="target"><td><strong>002028.SZ</strong> &nbsp; <span class="muted">Sieyuan Electric Co., Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">195.25</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">22.3</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-6.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+29.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">30.3x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 19.05">+59%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">36.9x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 12.47">+196%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">18.0%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+1.37pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+39.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+26.9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">20.3%</td></tr>
+<tr class="peer"><td><strong>600406.SH</strong> &nbsp; <span class="muted">NARI Technology Co., Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">26.07</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">30.6</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-3.9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+12.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">22.1x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 19.05">+16%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">18.9x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 12.47">+51%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">15.0%</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">-0.38pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+11.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+10.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">15.5%</td></tr>
+<tr class="peer"><td><strong>000400.SZ</strong> &nbsp; <span class="muted">XJ Electric Co., Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">24.97</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">3.7</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-11.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-5.8%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">14.6x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 19.05">-23%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">10.7x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 12.47">-14%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">9.6%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+0.75pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-12.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-0.1%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">9.6%</td></tr>
+<tr class="peer"><td><strong>600312.SH</strong> &nbsp; <span class="muted">Henan Pinggao Electric Co.,Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">21.53</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">4.3</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+2.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+19.7%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">19.1x</td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 19.05">0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">12.5x</td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 12.47">0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">11.6%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+2.34pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+0.9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+10.5%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">10.0%</td></tr>
+<tr class="peer"><td><strong>600089.SH</strong> &nbsp; <span class="muted">TBEA Co., Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">26.84</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">19.8</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-5.0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+17.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">17.9x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 19.05">-6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">11.6x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 12.47">-7%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">8.8%</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">-7.52pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-0.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+0.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">8.0%</td></tr>
+<tr class="peer"><td><strong>601179.SH</strong> &nbsp; <span class="muted">China XD Electric Co., Ltd</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">17.20</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">12.9</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+7.0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+82.0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">46.5x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 19.05">+144%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">33.3x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 12.47">+167%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">8.1%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+1.28pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+6.9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+8.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">5.5%</td></tr></tbody></table>
+  </section>
+
+  <section class="panel" id="panel-global">
+    <h2>ENR.DE | Siemens Energy — Global Power Basket</h2>
+    <div class="sub">Multi-jurisdiction · IFRS / USGAAP / JGAAP · 6 members + segment row</div>
+    <table class="comp"><thead><tr><th></th><th>Price</th><th>Mcap (USD bn)</th><th>1M %</th><th>YTD %</th><th>P/E (Fwd)</th><th>vs peer med</th><th>EV/EBITDA</th><th>vs peer med</th><th>EBIT margin</th><th>Margin slope</th><th>Rev YoY</th><th>3Y CAGR</th><th>ROE</th></tr></thead><tbody><tr class="target"><td><strong>ENR.DE</strong> &nbsp; <span class="muted">Siemens Energy AG</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">172.98</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">173.4</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+15.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+40.9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">30.3x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 36.37">-17%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">34.1x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 27.55">+24%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">4.0%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+2.95pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+13.4%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+10.4%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">13.7%</td></tr>
+<tr class="target_segment"><td><strong>ENR.DE:GridTech</strong> &nbsp; <span class="muted">Siemens Energy — Grid Technologies (segment)</span></td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted">—</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted">—</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td><td class="muted flag-data-pending" title="source=manual_yaml | retrieved=2026-04-28 22:19 UTC | note=data pending — fill data/raw/siemens_energy/segments_*.yaml | flag=DATA_PENDING">data pending</td></tr>
+<tr class="peer"><td><strong>GEV</strong> &nbsp; <span class="muted">GE Vernova Inc.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">1,088.93</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">292.6</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+27.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+60.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">44.4x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 36.37">+22%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">127.6x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 27.55">+363%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">3.6%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+4.42pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+9.0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+8.7%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">43.7%</td></tr>
+<tr class="peer"><td><strong>SU.PA</strong> &nbsp; <span class="muted">Schneider Electric S.E.</span></td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">—</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">178.3</td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">—</td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">—</td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">—</td><td class="muted">—</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">19.8x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 27.55">-28%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">17.5%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+0.42pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+5.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+5.5%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">17.2%</td></tr>
+<tr class="peer"><td><strong>6501.T</strong> &nbsp; <span class="muted">Hitachi, Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">5,047.00</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">142.3</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+11.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-0.4%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">28.3x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 36.37">-22%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">16.1x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 27.55">-41%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">9.9%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+0.91pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+0.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">-1.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">10.5%</td></tr>
+<tr class="peer"><td><strong>ETN</strong> &nbsp; <span class="muted">Eaton Corporation plc</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">413.07</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">160.3</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+15.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+26.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">26.7x</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 36.37">-27%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">27.5x</td><td class="muted" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 27.55">0%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">19.0%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+1.55pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+10.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+9.8%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">21.0%</td></tr>
+<tr class="peer"><td><strong>7011.T</strong> &nbsp; <span class="muted">Mitsubishi Heavy Industries, Ltd.</span></td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">4,797.00</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">101.0</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+8.6%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+15.3%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">51.8x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 36.37">+42%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">30.0x</td><td class="neg" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=vs peer median 27.55">+9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">7.7%</td><td class="pos" title="source=yfinance | retrieved=2026-04-28 22:19 UTC | note=annual obs; positive = improving">+1.36pp/yr</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+7.9%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">+9.2%</td><td class="" title="source=yfinance | retrieved=2026-04-28 22:19 UTC">10.5%</td></tr></tbody></table>
+  </section>
+
+  <section class="panel" id="panel-spread">
+    <h2>Cross-Basket Spread</h2>
+    <div class="sub">Pair-trade analytical artifact</div>
+
+    <div class="cm-warning"><div class="lbl">⚠ Cross-Market Asymmetry</div><ul><li>Accounting standards: CAS (China) vs IFRS / USGAAP / JGAAP (global)</li><li>Reporting frequency: Sieyuan semi-annual vs Siemens Energy quarterly</li><li>Fiscal year-end: Dec (China) vs Sept (Siemens Energy) vs Mar (Japanese peers)</li><li>Listing market: A-share with capital controls and Stock Connect dynamics vs European/US listings</li><li>Western analyst coverage limited for A-share peers — forward consensus often unavailable</li></ul></div>
+
+    <div class="section">
+      <h3>Direct Pair · Sieyuan vs Siemens Energy</h3>
+      <table class="spread"><thead><tr><th></th><th>Sieyuan</th><th>ENR cons.</th><th>ENR Grid</th></tr></thead><tbody><tr><td>EV/EBITDA</td><td>36.9x</td><td>34.1x</td><td>—</td></tr>
+<tr><td>P/E (Fwd)</td><td>30.3x</td><td>30.3x</td><td>—</td></tr>
+<tr><td>EBIT margin</td><td>18.0%</td><td>4.0%</td><td>—</td></tr>
+<tr><td>EBITDA margin</td><td>18.7%</td><td>10.7%</td><td>—</td></tr>
+<tr><td>Rev YoY</td><td>39.3%</td><td>13.4%</td><td>—</td></tr>
+<tr><td>3Y CAGR</td><td>26.9%</td><td>10.4%</td><td>—</td></tr>
+<tr><td>ROE</td><td>20.3%</td><td>13.7%</td><td>—</td></tr>
+<tr><td>Net Debt / EBITDA</td><td>-1.1x</td><td>-1.2x</td><td>—</td></tr>
+<tr><td>FCF Yield</td><td>0.9%</td><td>2.8%</td><td>—</td></tr></tbody></table>
+    </div>
+
+    <div class="section">
+      <h3>Basket-vs-Basket Median Spread</h3>
+      <table class="spread"><thead><tr><th></th><th>China median</th><th>Global median</th><th>Spread</th></tr></thead><tbody><tr><td>EV/EBITDA</td><td>12.5x</td><td>27.5x</td><td>-15.1x</td></tr>
+<tr><td>P/E (Fwd)</td><td>19.1x</td><td>36.4x</td><td>-17.3x</td></tr>
+<tr><td>EBIT margin</td><td>9.6%</td><td>9.9%</td><td>-0.3%</td></tr>
+<tr><td>EBITDA margin</td><td>14.5%</td><td>14.7%</td><td>-0.2%</td></tr>
+<tr><td>Rev YoY</td><td>0.9%</td><td>7.9%</td><td>-7.0%</td></tr>
+<tr><td>3Y CAGR</td><td>8.3%</td><td>8.7%</td><td>-0.4%</td></tr>
+<tr><td>ROE</td><td>9.6%</td><td>17.2%</td><td>-7.6%</td></tr>
+<tr><td>Net Debt / EBITDA</td><td>-3.4x</td><td>0.8x</td><td>-4.3x</td></tr>
+<tr><td>FCF Yield</td><td>2.0%</td><td>2.2%</td><td>-0.2%</td></tr></tbody></table>
+    </div>
+
+    <div class="section">
+      <h3>Relative Positioning · Sieyuan within China T&amp;D</h3>
+      <table class="spread"><thead><tr><th></th><th>Target</th><th>Peer median</th><th>Position</th></tr></thead><tbody><tr><td>EV/Sales</td><td>6.9x</td><td>1.9x</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>EV/EBITDA</td><td>36.9x</td><td>12.5x</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>P/E (Fwd)</td><td>30.3x</td><td>19.1x</td><td class="position-rich">RICH (80th pct)</td></tr>
+<tr><td>P/E (TTM)</td><td>48.5x</td><td>26.1x</td><td class="position-rich">RICH (80th pct)</td></tr>
+<tr><td>FCF Yield</td><td>0.9%</td><td>2.0%</td><td class="position-neutral">NEUTRAL (20th pct)</td></tr>
+<tr><td>EBIT margin</td><td>18.0%</td><td>9.6%</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>EBITDA margin</td><td>18.7%</td><td>14.5%</td><td class="position-rich">RICH (80th pct)</td></tr>
+<tr><td>Rev YoY</td><td>39.3%</td><td>0.9%</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>3Y CAGR</td><td>26.9%</td><td>8.3%</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>ROE</td><td>20.3%</td><td>9.6%</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>Net Debt / EBITDA</td><td>-1.1x</td><td>-3.4x</td><td class="position-rich">RICH (60th pct)</td></tr></tbody></table>
+    </div>
+
+    <div class="section">
+      <h3>Relative Positioning · Siemens Energy within Global Power</h3>
+      <table class="spread"><thead><tr><th></th><th>Target</th><th>Peer median</th><th>Position</th></tr></thead><tbody><tr><td>EV/Sales</td><td>3.7x</td><td>4.1x</td><td class="position-neutral">NEUTRAL (40th pct)</td></tr>
+<tr><td>EV/EBITDA</td><td>34.1x</td><td>27.5x</td><td class="position-neutral">NEUTRAL (80th pct)</td></tr>
+<tr><td>P/E (Fwd)</td><td>30.3x</td><td>36.4x</td><td class="position-neutral">NEUTRAL (50th pct)</td></tr>
+<tr><td>P/E (TTM)</td><td>104.6x</td><td>39.2x</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>FCF Yield</td><td>2.8%</td><td>2.2%</td><td class="position-neutral">NEUTRAL (60th pct)</td></tr>
+<tr><td>EBIT margin</td><td>4.0%</td><td>9.9%</td><td class="position-neutral">NEUTRAL (20th pct)</td></tr>
+<tr><td>EBITDA margin</td><td>10.7%</td><td>14.7%</td><td class="position-neutral">NEUTRAL (20th pct)</td></tr>
+<tr><td>Rev YoY</td><td>13.4%</td><td>7.9%</td><td class="position-rich">RICH (100th pct)</td></tr>
+<tr><td>3Y CAGR</td><td>10.4%</td><td>8.7%</td><td class="position-neutral">NEUTRAL (100th pct)</td></tr>
+<tr><td>ROE</td><td>13.7%</td><td>17.2%</td><td class="position-neutral">NEUTRAL (40th pct)</td></tr>
+<tr><td>Net Debt / EBITDA</td><td>-1.2x</td><td>0.8x</td><td class="position-cheap">CHEAP (20th pct)</td></tr></tbody></table>
+    </div>
+
+    <div class="section">
+      <h3>Valuation-Reset Sensitivity</h3>
+      <div class="reset-bar"><div class="label">Sieyuan vs China T&amp;D basket forward P/E</div><div class="value neg">-37.0%</div></div><div class="muted" style="font-size:9px;margin:-3px 0 8px;">negative = downside if multiple reverts to basket median</div><div class="reset-bar"><div class="label">Siemens Energy (consolidated) vs Global Power basket forward P/E</div><div class="value pos">+20.0%</div></div><div class="muted" style="font-size:9px;margin:-3px 0 8px;">negative = downside if multiple reverts</div>
+    </div>
+
+    <div class="section">
+      <h3>Policy Exposure Overlay</h3>
+      <div class="muted" style="font-size:10px;">Policy exposure YAML not yet populated. Fill <code>data/policy/exposure_2026.yaml</code> with citations.</div>
+    </div>
+
+    <div class="section">
+      <h3>Commentary</h3>
+      <div class="commentary-banner">*** DRAFT — REQUIRES HUMAN REVIEW. AI-GENERATED FROM SPREAD ANALYSIS DATA ONLY. NOT A TRADE RECOMMENDATION. ***</div><div style="margin-bottom:10px;font-style:italic;">Data shows Sieyuan trades at a pronounced premium within its China T&amp;D basket on nearly every valuation metric, while Siemens Energy sits broadly neutral within its Global Power peers despite a materially lower margin base.</div><details class="commentary"><summary>Direct Pair Observations</summary><div class="body">On a direct consolidated basis, the two names trade at near-identical forward P/E multiples — Sieyuan at 30.25x versus Siemens Energy at 30.32x, a spread of approximately -0.07x — yet this surface-level equivalence obscures substantial fundamental divergence. Sieyuan reports an EBIT margin of approximately 18.0% against Siemens Energy&#x27;s 4.0%, a raw spread of roughly 14 percentage points, while Sieyuan&#x27;s most recent revenue growth of approximately 39.3% year-on-year compares to Siemens Energy&#x27;s 13.4%. On EV/EBITDA, Sieyuan trades at a modest premium (36.9x versus 34.1x, a spread of approximately 2.8x), but Sieyuan&#x27;s FCF yield of approximately 0.9% is materially below Siemens Energy&#x27;s 2.8%, suggesting that margin superiority is not yet fully translating into cash generation on a relative basis. Net debt/EBITDA for both names is negative (i.e., net cash), with Siemens Energy at approximately -1.24x and Sieyuan at -1.10x, indicating broadly comparable balance sheet positions at the consolidated level. Any direct cross-instrument comparison must be treated with caution: Sieyuan is an A-share listed on a mainland Chinese exchange reporting under CAS on a semi-annual basis, while Siemens Energy is a Frankfurt/XETRA-listed European industrial reporting under IFRS on a quarterly basis with a September fiscal year-end. Accounting treatment of revenue recognition, lease capitalisation, and D&amp;A conventions are not directly comparable across these standards, and A-share market structure — including capital controls, Stock Connect liquidity dynamics, and domestic investor base characteristics — introduces valuation regime differences that cannot be resolved through multiple arithmetic alone.</div></details><details class="commentary"><summary>Basket-Relative Positioning</summary><div class="body">Sieyuan screens as unambiguously rich relative to its China T&amp;D peer basket: it sits at the 100th percentile on EV/Sales (6.90x versus basket median of 1.91x), EV/EBITDA (36.92x versus basket median of 12.47x), revenue growth (39.3% YoY and 26.9% 3-year CAGR versus basket medians of approximately 0.9% and 8.3% respectively), EBIT margin (18.0% versus basket median of 9.6%), and ROE (20.3% versus basket median of 9.6%), with forward P/E and trailing P/E at the 80th percentile; the sole metric where Sieyuan does not screen as rich is FCF yield, where it sits at the 20th percentile (NEUTRAL), consistent with its comparatively low cash conversion observed in the direct pair. Siemens Energy, by contrast, screens as broadly neutral within its Global Power peer basket across most valuation and fundamental metrics — EV/Sales at the 40th percentile, forward P/E at the 50th percentile, and EBIT and EBITDA margins at the 20th percentile — with the notable exception of trailing P/E (RICH, 100th percentile at 104.6x versus basket median of 39.2x, likely reflecting a depressed trailing earnings base) and net debt/EBITDA (CHEAP, 20th percentile, consistent with its net cash position in a basket where the median is net debt of approximately 0.85x EBITDA), while revenue growth ranks at the 100th percentile on both YoY and 3-year CAGR measures, suggesting top-of-basket growth delivery despite below-median margins.</div></details><details class="commentary"><summary>Trajectory Asymmetry</summary><div class="body">The trajectory data reveals an asymmetry in the direction and magnitude of EBIT margin improvement. Siemens Energy&#x27;s consolidated EBIT margin slope registers at approximately +2.95 percentage points per annum, roughly 2.2x the Global Power basket median slope of +1.36 percentage points per annum, indicating that Siemens Energy is expanding margins at a pace meaningfully above its peer group — albeit from a low absolute base of approximately 4.0%. Sieyuan&#x27;s EBIT margin slope of approximately +1.37 percentage points per annum is modestly above the China T&amp;D basket median slope of approximately +0.75 percentage points per annum, suggesting incremental outperformance within its basket but at a less pronounced rate differential than observed for Siemens Energy; Sieyuan&#x27;s absolute margin is already among the highest in its basket, which may arithmetically constrain the continuation of an above-median slope. The data therefore points to a trajectory asymmetry where Siemens Energy is a steeper margin-recovery story from a lower base, while Sieyuan is a margin-sustenance story from a higher base.</div></details><details class="commentary"><summary>Valuation-Reset Observations</summary><div class="body">The valuation reset sensitivity analysis quantifies the asymmetric exposure to median reversion within each respective basket. A reversion of Sieyuan&#x27;s forward P/E to the China T&amp;D basket median (19.05x from 30.25x) would imply an approximately -37.0% move, reflecting the extent of its premium positioning. Siemens Energy&#x27;s forward P/E of 30.32x sits below its Global Power basket median of 36.37x, and a reversion to that median would imply an approximately +20.0% move; the directional sign here is positive, meaning Siemens Energy&#x27;s forward multiple is currently below the basket central tendency rather than above it. This asymmetry in the sign and magnitude of median-revert sensitivity — approximately -37% for Sieyuan versus approximately +20% for Siemens Energy — is a data-observable feature of the current relative positioning, though any assessment of whether such reversion is likely or warranted requires fundamental judgements outside the scope of this dataset.</div></details><details class="commentary"><summary>Data Flags</summary><div class="body">1. ENR Grid Segment data is null across all metrics in both the direct_pair and basket_vs_basket arrays, limiting the ability to isolate Siemens Energy&#x27;s Grid Technologies division for a cleaner T&amp;D-to-T&amp;D comparison against Sieyuan; all Siemens Energy observations are therefore consolidated-level only and reflect the blended Gas Services, Grid Technologies, Transformation of Industry, and Siemens Gamesa mix. 2. Siemens Energy&#x27;s trailing P/E of 104.6x versus a forward P/E of 30.3x implies a very substantial earnings step-up embedded in forward consensus, which is consistent with a recent loss-to-profit turnaround but means trailing and forward multiples are not comparable in the usual sense; the TTM P/E should be interpreted cautiously as a valuation anchor. 3. The trajectory_asymmetry block contains data only for EBIT margin slope; no slope data is provided for revenue growth, ROE, or FCF yield trajectories, limiting the scope of momentum analysis. 4. The policy_exposure array is empty, which is noted as a coverage gap given that both Sieyuan (domestic Chinese grid capex policy) and Siemens Energy (European energy transition regulation, US IRA-adjacent exposure) have material policy sensitivities. 5. Cross-market basket comparisons (basket_vs_basket spreads) should be interpreted as mechanical arithmetic differences across non-harmonised accounting regimes and are not analytically equivalent to intra-basket peer spreads; the CAS versus IFRS/USGAAP/JGAAP divergence is particularly relevant for EBITDA and margin metrics where D&amp;A capitalisation conventions differ.</div></details><details class="commentary"><summary>Limitations</summary><div class="body">This analysis cannot speak to the current position of each company within its respective energy investment cycle, nor to the sustainability of China&#x27;s grid infrastructure spending programme or European offshore wind ramp timelines. It cannot assess the macroeconomic or foreign exchange sensitivities of either business — including RMB/EUR dynamics relevant to any notional cross-market framing, or USD-denominated commodity input cost exposures for Siemens Energy. It does not capture the risk of technological obsolescence in high-voltage switchgear or offshore wind turbine platforms, nor the competitive dynamics of Chinese domestic T&amp;D procurement. Regulatory enforcement timing — including tariff regimes, grid-connection mandates, or equipment localisation requirements — is not reflected in any of the metrics provided. The analysis does not assess management execution risk, order book quality, or contract margin visibility. Forward consensus estimates, where used in P/E calculations, embed sell-side forecast assumptions that are unverifiable within this dataset and may differ materially in revision frequency and coverage depth between A-share and European-listed names, further complicating cross-market multiple comparisons.</div></details>
+    </div>
+  </section>
+</div>
+
+<footer class="bar">
+  <div>FX (USD per unit): CNY=0.1463 · EUR=1.1721 · JPY=0.0063 · USD=1.0000</div>
+  <div>Lineage: outputs/lineage/run_2026-04-28_2219_UTC.json (placeholder)</div>
+  <div><span class="draft">DRAFT</span></div>
+</footer>
+
+</body>
+</html>

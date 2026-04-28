@@ -1,0 +1,32 @@
+# Tell Vercel to ignore everything except the static public/ directory.
+# This is a static-only deploy — no Python build, no serverless functions.
+
+# Python source / tools
+src/
+scripts/
+tests/
+
+# Local dev artifacts
+.venv/
+__pycache__/
+*.pyc
+
+# Working directories
+data/
+outputs/
+
+# Project metadata not needed at runtime
+.claude/
+CLAUDE.md
+fetch_locally.py
+requirements.txt
+README.md
+
+# Local env / secrets
+.env
+.env.local
+.env.example
+
+# OS / IDE
+.DS_Store
+.gitignore

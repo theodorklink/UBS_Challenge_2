@@ -146,6 +146,49 @@ cd outputs/views && python -m http.server 8001
 
 ---
 
+## Deploy to Vercel (static-only)
+
+The pipeline runs **locally** (yfinance + Anthropic + ~90s), and the rendered HTML is published as a **static page** on Vercel. The CLI automatically writes the latest run to `public/index.html`; pushing to GitHub triggers a Vercel auto-deploy.
+
+### One-time setup
+
+1. Sign up at <https://vercel.com> → "Continue with GitHub".
+2. "Add New" → "Project" → import `theodorklink/UBS_Challenge_2`.
+3. **Framework Preset**: leave on "Other" (Vercel auto-detects static via `vercel.json`).
+4. **Root Directory**: `./` (default).
+5. **Build Settings**: leave at defaults — `vercel.json` overrides them.
+6. **Environment Variables**: NONE NEEDED. The deploy is pure static; no API keys at runtime.
+7. Deploy.
+
+You'll get a URL like `https://ubs-challenge-2.vercel.app`.
+
+### Per-presentation refresh workflow
+
+```bash
+# Generate fresh data + HTML locally
+python -m src.cli run
+
+# This writes BOTH:
+#   outputs/views/sieyuan_vs_siemens_<timestamp>.html  (timestamped archive)
+#   public/index.html                                  (overwritten with latest)
+
+# Commit and push — Vercel auto-deploys in ~30s
+git add public/index.html
+git commit -m "Refresh Bloomberg view ($(date +%Y-%m-%d))"
+git push
+```
+
+That's the whole workflow. No serverless complexity, no API blocking, no 60s timeouts.
+
+### Why static-only and not serverless?
+
+- **yfinance** is blocked from most cloud IPs (Yahoo blocks AWS/Vercel ranges)
+- **Pipeline takes ~90s** — Vercel Hobby tier function timeout is 60s
+- **Anthropic call alone is ~45s** — too tight for live serverless
+- **Snapshot is meant to be reproducible** — frozen at run time is a feature, not a bug, for a competition submission
+
+---
+
 ## Hard rules (encoded in code)
 
 These are non-negotiable safety constraints, defined in [`CLAUDE.md`](CLAUDE.md):

@@ -89,9 +89,16 @@ def main() -> int:
     log.info("Rendering Bloomberg three-panel HTML...")
     out_html = OUTPUTS / "views" / f"sieyuan_vs_siemens_{timestamp}.html"
     render_pair_view(china_table, global_table, spread, commentary, out_html)
+
+    # Mirror to public/index.html so Vercel deploys the latest run.
+    public_html = ROOT / "public" / "index.html"
+    public_html.parent.mkdir(parents=True, exist_ok=True)
+    public_html.write_bytes(out_html.read_bytes())
+
     log.info("\n=== DONE ===")
-    log.info("HTML output: %s", out_html)
-    log.info("Open with:   open %s", out_html)
+    log.info("Timestamped output: %s", out_html)
+    log.info("Public/index.html:  %s  (commit + push to update Vercel deploy)", public_html)
+    log.info("Open locally with:  open %s", out_html)
     return 0
 
 
