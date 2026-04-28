@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ubs-ai-module (FastAPI dashboard, /api/run live)",
+      "runtimeExecutable": "/Users/SchmidtColleg/ubs-ai-module/.venv/bin/python",
+      "runtimeArgs": [
+        "-m", "uvicorn",
+        "api.index:app",
+        "--reload",
+        "--port", "8000",
+        "--app-dir", "/Users/SchmidtColleg/ubs-ai-module"
+      ],
+      "port": 8000
+    },
+    {
+      "name": "ubs-valuation-tool (Bloomberg HTML output preview)",
+      "runtimeExecutable": "/Users/SchmidtColleg/ubs-valuation-tool/.venv/bin/python",
+      "runtimeArgs": [
+        "-m", "http.server",
+        "8001",
+        "--directory", "/Users/SchmidtColleg/ubs-valuation-tool/outputs/views"
+      ],
+      "port": 8001
+    }
+  ]
+}

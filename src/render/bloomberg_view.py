@@ -13,6 +13,7 @@ beyond Google Fonts CDN.
 from __future__ import annotations
 
 import html
+import math
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -32,33 +33,41 @@ from ..summary.commentary import Commentary
 # Formatters
 
 
-def fmt_num(v: Optional[float], decimals: int = 1) -> str:
+def _is_missing(v) -> bool:
     if v is None:
+        return True
+    if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+        return True
+    return False
+
+
+def fmt_num(v: Optional[float], decimals: int = 1) -> str:
+    if _is_missing(v):
         return "—"
     return f"{v:,.{decimals}f}"
 
 
 def fmt_pct(v: Optional[float], decimals: int = 1, signed: bool = False) -> str:
-    if v is None:
+    if _is_missing(v):
         return "—"
     sign = "+" if signed and v > 0 else ""
     return f"{sign}{v * 100:.{decimals}f}%"
 
 
 def fmt_mult(v: Optional[float], decimals: int = 1) -> str:
-    if v is None:
+    if _is_missing(v):
         return "—"
     return f"{v:.{decimals}f}x"
 
 
 def fmt_money_bn(v: Optional[float], ccy: str) -> str:
-    if v is None:
+    if _is_missing(v):
         return "—"
     return f"{ccy} {v / 1e9:,.1f}bn"
 
 
 def fmt_slope_pp(v: Optional[float]) -> str:
-    if v is None:
+    if _is_missing(v):
         return "—"
     sign = "+" if v >= 0 else ""
     return f"{sign}{v * 100:.2f}pp/yr"
