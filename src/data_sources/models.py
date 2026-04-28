@@ -52,7 +52,7 @@ class CompanyInfo(Provenance):
 
 class Quote(Provenance):
     ticker: str
-    price: float
+    price: Optional[float] = None
     currency: str
     pct_1d: Optional[float] = None
     pct_1m: Optional[float] = None
