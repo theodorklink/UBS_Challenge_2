@@ -1,0 +1,101 @@
+# Policy Exposure Overlay — manual hand-filled with citations
+#
+# Each entry scores a target's exposure to a specific policy regime
+# on a -1.0 (large headwind) to +1.0 (large tailwind) scale, with
+# explicit rationale and source URL.
+#
+# The Cross-Basket Spread analyzer surfaces these on the right panel
+# of the Bloomberg view but does NOT score or sum them — they are
+# context for the human analyst.
+#
+# YOU FILL THE NUMBERS AND SOURCES; the structure is fixed.
+
+policies:
+
+  - policy: "EU CBAM (Carbon Border Adjustment Mechanism)"
+    target_ticker: "ENR.DE"
+    exposure_score: TODO          # likely positive — EU domestic incumbent
+    rationale: |
+      TODO_describe_in_2_sentences
+    source_url: "TODO_official_EU_or_company_disclosure"
+    retrieved_at: "TODO_ISO8601"
+
+  - policy: "EU CBAM (Carbon Border Adjustment Mechanism)"
+    target_ticker: "002028.SZ"
+    exposure_score: TODO          # likely negative — Chinese exporter to EU
+    rationale: |
+      TODO_describe_in_2_sentences
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "EU Foreign Subsidies Regulation (FSR)"
+    target_ticker: "ENR.DE"
+    exposure_score: TODO          # neutral / mild positive
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "EU Foreign Subsidies Regulation (FSR)"
+    target_ticker: "002028.SZ"
+    exposure_score: TODO          # negative — bidding constraint on EU projects
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "US Section 232 (national security tariffs)"
+    target_ticker: "ENR.DE"
+    exposure_score: TODO
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "US Section 232 (national security tariffs)"
+    target_ticker: "002028.SZ"
+    exposure_score: TODO          # potentially negative — grid equipment scrutiny
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "US Inflation Reduction Act (IRA)"
+    target_ticker: "ENR.DE"
+    exposure_score: TODO          # positive — domestic-content incentives benefit Western OEMs
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "US Inflation Reduction Act (IRA)"
+    target_ticker: "002028.SZ"
+    exposure_score: TODO          # neutral / negative — exclusion risk
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "Stock Connect / Northbound flow risk"
+    target_ticker: "002028.SZ"
+    exposure_score: TODO          # likely negative if Western flows reduce
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "China grid capex cycle"
+    target_ticker: "002028.SZ"
+    exposure_score: TODO          # positive structurally; surfaced for balance
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"
+
+  - policy: "EU Net-Zero Industry Act / Grid Action Plan"
+    target_ticker: "ENR.DE"
+    exposure_score: TODO          # positive — EU grid-spend acceleration
+    rationale: |
+      TODO
+    source_url: "TODO"
+    retrieved_at: "TODO"

@@ -1,0 +1,104 @@
+# Global power-equipment peer basket
+# Used to benchmark Siemens Energy (ENR.DE) within its global industry peer set.
+basket: global_power
+target: "ENR.DE"
+description: |
+  Global power-equipment and electrical-infrastructure incumbents.
+  Diversified Western and Japanese conglomerates with significant grid
+  / power generation / electrification exposure. IFRS / USGAAP / JGAAP
+  reporting; quarterly disclosure. Mature capital structures.
+
+members:
+  - ticker: "ENR.DE"
+    yfinance_ticker: "ENR.DE"
+    name: "Siemens Energy"
+    role: target
+    primary_listing: "Frankfurt (XETRA)"
+    currency: "EUR"
+    classification_hint: "Energy technology - 4 segments"
+    accounting: "IFRS"
+    fiscal_year_end_month: 9
+    reporting_frequency: "quarterly"
+    notes: |
+      Four segments: Gas Services, Grid Technologies, Transformation of
+      Industry, Siemens Gamesa (wind, structurally loss-making until
+      recently). Direct comparison to Sieyuan uses GRID TECHNOLOGIES
+      segment data, not consolidated. Group-level fiscal year ends
+      September.
+
+  - ticker: "GEV"
+    yfinance_ticker: "GEV"
+    name: "GE Vernova"
+    role: peer
+    primary_listing: "NYSE"
+    currency: "USD"
+    classification_hint: "Energy technology - power, wind, electrification"
+    accounting: "USGAAP"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    notes: |
+      Spinoff from GE in 2024. Closest structural peer to Siemens Energy
+      (multi-segment, wind exposure, grid + power generation). Limited
+      multi-year history because of recent spinoff — flag this in
+      validator.
+
+  - ticker: "SU.PA"
+    yfinance_ticker: "SU.PA"
+    name: "Schneider Electric"
+    role: peer
+    primary_listing: "Euronext Paris"
+    currency: "EUR"
+    classification_hint: "Energy management + automation"
+    accounting: "IFRS"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    notes: |
+      Higher-quality, higher-margin peer. Energy management focus
+      overlaps with Grid Technologies but Schneider is broader
+      (process automation, data center infrastructure).
+
+  - ticker: "6501.T"
+    yfinance_ticker: "6501.T"
+    name: "Hitachi"
+    role: peer
+    primary_listing: "Tokyo"
+    currency: "JPY"
+    classification_hint: "Conglomerate - power, IT, mobility, industry"
+    accounting: "JGAAP / IFRS hybrid"
+    fiscal_year_end_month: 3
+    reporting_frequency: "quarterly"
+    notes: |
+      Hitachi Energy (former ABB Power Grids) is a key business unit but
+      Hitachi consolidated includes IT, mobility, industrial machinery.
+      Direct comparison must caveat the conglomerate distortion.
+
+  - ticker: "ETN"
+    yfinance_ticker: "ETN"
+    name: "Eaton"
+    role: peer
+    primary_listing: "NYSE"
+    currency: "USD"
+    classification_hint: "Power management - electrical, aerospace, mobility"
+    accounting: "USGAAP"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    notes: |
+      Most directly comparable to Siemens Energy's electrical-products
+      exposure, but significant aerospace and mobility content.
+
+  - ticker: "7011.T"
+    yfinance_ticker: "7011.T"
+    name: "Mitsubishi Heavy Industries"
+    role: peer
+    primary_listing: "Tokyo"
+    currency: "JPY"
+    classification_hint: "Conglomerate - power, defense, machinery"
+    accounting: "JGAAP / IFRS hybrid"
+    fiscal_year_end_month: 3
+    reporting_frequency: "quarterly"
+    notes: |
+      Stretch peer. Power business is significant but minority of
+      revenue (~30%); defense and machinery dominate. Validator should
+      flag this as the weakest peer fit. Consider replacing with
+      Prysmian (PRY.MI) or Nexans (NEX.PA) if the validator confirms
+      poor classification fit.

@@ -1,0 +1,95 @@
+# China T&D peer basket
+# Used to benchmark Sieyuan Electric (002028.SZ) within its domestic peer set.
+# yfinance ticker form uses .SS for Shanghai (not .SH).
+basket: china_td
+target: "002028.SZ"
+description: |
+  Chinese T&D equipment manufacturers — switchgear, transformers, GIS,
+  reactors, smart grid technology. All listed on Shanghai or Shenzhen
+  exchanges. CAS reporting. Mix of SOE and private ownership.
+
+members:
+  - ticker: "002028.SZ"
+    yfinance_ticker: "002028.SZ"
+    name: "Sieyuan Electric"
+    role: target
+    primary_listing: "Shenzhen"
+    currency: "CNY"
+    classification_hint: "T&D equipment - switchgear, GIS, reactors"
+    fiscal_year_end_month: 12
+    reporting_frequency: "semi_annual"
+    ownership: "private"
+    notes: |
+      Pure-play T&D. Strong overseas growth narrative (Saudi, Indonesia,
+      MENA). High-teens net margin. Multi-year stock rally has stretched
+      valuation.
+
+  - ticker: "600406.SH"
+    yfinance_ticker: "600406.SS"
+    name: "NARI Technology"
+    role: peer
+    primary_listing: "Shanghai"
+    currency: "CNY"
+    classification_hint: "Smart grid software + automation"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    ownership: "SOE (State Grid affiliated)"
+    notes: |
+      Largest pure-play Chinese smart grid software/automation peer.
+      State Grid affiliation is a positioning advantage and dependence.
+
+  - ticker: "000400.SZ"
+    yfinance_ticker: "000400.SZ"
+    name: "XJ Electric"
+    role: peer
+    primary_listing: "Shenzhen"
+    currency: "CNY"
+    classification_hint: "Power electronics, HVDC, switchgear"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    ownership: "SOE"
+    notes: |
+      Closest direct peer to Sieyuan in HVDC and switchgear product mix.
+
+  - ticker: "600312.SH"
+    yfinance_ticker: "600312.SS"
+    name: "Pinggao Electric"
+    role: peer
+    primary_listing: "Shanghai"
+    currency: "CNY"
+    classification_hint: "High-voltage switchgear, GIS"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    ownership: "SOE (State Grid affiliated)"
+    notes: |
+      GIS-focused. SOE governance overlay. Direct switchgear comparison
+      to Sieyuan.
+
+  - ticker: "600089.SH"
+    yfinance_ticker: "600089.SS"
+    name: "TBEA"
+    role: peer
+    primary_listing: "Shanghai"
+    currency: "CNY"
+    classification_hint: "Transformer + polysilicon hybrid"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    ownership: "private"
+    notes: |
+      Hybrid business model — transformers plus polysilicon (solar value
+      chain). The polysilicon segment distorts pure-play multiples.
+      Validator may flag for de-emphasis.
+
+  - ticker: "601179.SH"
+    yfinance_ticker: "601179.SS"
+    name: "China XD Electric"
+    role: peer
+    primary_listing: "Shanghai"
+    currency: "CNY"
+    classification_hint: "Power equipment - transformers, switchgear"
+    fiscal_year_end_month: 12
+    reporting_frequency: "quarterly"
+    ownership: "SOE"
+    notes: |
+      Smaller free float, A-share liquidity is thinner than the others.
+      Multiples may show outlier behaviour driven by liquidity dynamics.

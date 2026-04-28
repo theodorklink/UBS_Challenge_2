@@ -1,0 +1,66 @@
+# Siemens Energy AG — FY2025 Q1 Segment Data
+# Fiscal Quarter: October 2024 - December 2024
+#
+# SOURCE: Siemens Energy Q1 FY2025 Quarterly Report
+#   https://www.siemens-energy.com/global/en/home/investor-relations/
+#     publications.html
+#   Look for "Q1 FY2025 Earnings Release" / "Q1 FY25 Press Release" PDF
+
+fiscal_period: "FY2025_Q1"
+fiscal_year: 2025
+quarter: 1
+period_start: "2024-10-01"
+period_end: "2024-12-31"
+currency: "EUR"
+unit: "millions"
+
+source_document_url: "TODO_paste_PDF_URL_here"
+retrieved_at: "TODO_ISO8601_when_you_filled_this"
+
+segments:
+
+  gas_services:
+    revenue: TODO
+    orders: TODO
+    book_to_bill: TODO
+    adjusted_ebita: TODO
+    adjusted_ebita_margin: TODO
+    free_cash_flow: TODO
+    source_page: TODO
+
+  grid_technologies:
+    revenue: TODO
+    orders: TODO
+    book_to_bill: TODO
+    adjusted_ebita: TODO
+    adjusted_ebita_margin: TODO
+    free_cash_flow: TODO
+    source_page: TODO
+
+  transformation_of_industry:
+    revenue: TODO
+    orders: TODO
+    book_to_bill: TODO
+    adjusted_ebita: TODO
+    adjusted_ebita_margin: TODO
+    free_cash_flow: TODO
+    source_page: TODO
+
+  siemens_gamesa:
+    revenue: TODO
+    orders: TODO
+    book_to_bill: TODO
+    adjusted_ebita: TODO
+    adjusted_ebita_margin: TODO
+    free_cash_flow: TODO
+    source_page: TODO
+
+group_consolidated:
+  revenue: TODO
+  orders: TODO
+  adjusted_ebita: TODO
+  adjusted_ebita_margin: TODO
+  free_cash_flow: TODO
+  source_page: TODO
+
+notes: ""
